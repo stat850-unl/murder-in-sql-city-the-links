@@ -1,7 +1,6 @@
 ---
-title: "Homework: Murder in SQL City"
+title: "Homework 07: Murder in SQL City"
 author: "Firstname Lastname"
-output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -14,26 +13,22 @@ library(tidyverse)
 ## Instructions
 Northwestern University's Knight lab created a SQL murder mystery to help users sharpen their database skills by solving the crime that happened at SQL city. There are tables with different pieces of information - social media checkins, people, drivers licenses, crime scene reports, police interviews, and more. 
 
-Pick R or SAS, and solve the murder mystery, showing **all of your work in this document**. 
+Pick R or Python, and solve the murder mystery, showing **all of your work in this document**. 
 
 Your solution must be reproducible -- that is, you should use dplyr verbs, table joins, etc. to solve the mystery, rather than just looking through the tables yourselves.
 
 You may work in groups of 2-4 people on this assignment. Each person should turn in their own assignment, but should list their group members as authors.
 
+Make sure you do your due diligence! You should double check your answer and print out the guilty party's interview from the database.
 
 **For 5 bonus points, when you're finished in one language, write equivalent code in the other language to solve the problem.**
 
 When you are finished with the assignment: 
 
-1. Save the file as 07_Lastname_Firstname.Rmd and compile it
-2. Commit the Rmd file and corresponding html file to your homework git repo
-3. Push the commit to github
-4. Provide the name of the guilty party in the text input field on Canvas, and make sure all of your work is on GitHub to receive full credit.
-
-
-Your assignment must compile on a different computer as long as the sas path is set up correctly for that machine.
-
-I have exported the tables as CSVs, and you can access those using the code at these links: [R](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.R), [SAS](https://github.com/srvanderplas/unl-stat850/blob/master/code/06_sql-murder-setup.sas)
+- Once you have finished this assignment, render the document (Ctrl/Cmd-Shift-K or the Render button). 
+- Commit the qmd file and any other files you have changed to the repository and push your changes.
+- In Canvas, submit a link to your github repository containing the updated files.
+- Provide the name of the guilty party in the text input field on Canvas, and make sure all of your work is on GitHub to receive full credit.
 
 The chunks below use the code to read in each of the 8 tables of data for this assignment.
 
@@ -60,9 +55,16 @@ library(DBI)
 
 # Your database connection code goes here. Store the connection as con 
 con <- dbConnect(RSQLite::SQLite(), "sql-murder-mystery.db")
+
+# close the connection when you're done
+dbDisconnect(con)
 ```
 
 ```{r table-setup-r}
+# This loads all of the tables into R data frame objects. 
+# You can also just use the database connection above.
+
+# You don't need to understand what this code does to run it :)
 if (!"purrr" %in% installed.packages()) {
   install.packages("purrr")
 }
@@ -84,22 +86,28 @@ purrr::walk(table_names, function(x) {
 })
 ```
 
-## SAS
 
-```{r load-sas-libraries, echo = F, message = F, warning = F}
 
-library(SASmarkdown)
-sas_enginesetup(sashtml=sashtml)
+## Python
 
-sasexe <- "C:/Program Files/SASHome/SASFoundation/9.4/sas.exe"
-sasopts <- "-nosplash -ls 75"
+```{python table-setup-py}
+import pandas as pd
+import sqlite3
 
-# Linux options (for grading, please leave this in!)
-sasexe <- "/usr/local/SASHome/SASFoundation/9.4/bin/sas_en"
-sasopts <- "-ls 75"
-```
+# Read sqlite query results into a pandas DataFrame
+con = sqlite3.connect("sql-murder-mystery.db")
 
-```{r, engine = "sashtml", engine.path = sasexe, engine.opts = sasopts, collectcode = T, error = T, include = T}
-/* This runs code stored in the import-code.sas file */
-%include 'import-code.sas';
+crime_scene_report = pd.read_sql_query("SELECT * from crime_scene_report", con)
+drivers_license = pd.read_sql_query("SELECT * from drivers_license", con)
+facebook_event_checkin = pd.read_sql_query("SELECT * from facebook_event_checkin", con)
+get_fit_now_check_in = pd.read_sql_query("SELECT * from get_fit_now_check_in", con)
+get_fit_now_member = pd.read_sql_query("SELECT * from get_fit_now_member", con)
+income = pd.read_sql_query("SELECT * from income", con)
+interview = pd.read_sql_query("SELECT * from interview", con)
+person = pd.read_sql_query("SELECT * from person", con)
+
+# Verify that result of SQL query is stored in the dataframe
+print(crime_scene_report.head())
+
+con.close()
 ```
