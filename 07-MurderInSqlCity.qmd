@@ -78,7 +78,7 @@ table_names <- c("crime_scene_report",
                  "interview",
                  "person")
 
-url_base <- "https://raw.githubusercontent.com/srvanderplas/unl-stat850/master/data/sql-murder/"
+url_base <- "https://raw.githubusercontent.com/srvanderplas/unl-stat850/main/data/sql-murder/"
 
 # For each table name, read the tables in and store them as the name of the table
 purrr::walk(table_names, function(x) {
