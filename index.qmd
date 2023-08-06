@@ -47,9 +47,7 @@ This database schema may help you figure out how to navigate the database:
 ![sql-murder-mystery database schema diagram](https://github.com/NUKnightLab/sql-mysteries/blob/master/schema.png?raw=true)
 
 ## R
-```{r db-setup-r, eval = T}
-# you can do the assignment using the database, if you want, 
-# or you can use the script file to read in each table separately.
+```{r db-setup-r}
 library(RSQLite)
 library(DBI)
 
