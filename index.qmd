@@ -21,8 +21,6 @@ You may work in groups of 2-4 people on this assignment. Each person should turn
 
 Make sure you do your due diligence! You should double check your answer and print out the guilty party's interview from the database.
 
-**For 5 bonus points, when you're finished in one language, write equivalent code in the other language to solve the problem.**
-
 When you are finished with the assignment: 
 
 - Once you have finished this assignment, render the document (Ctrl/Cmd-Shift-K or the Render button). 
