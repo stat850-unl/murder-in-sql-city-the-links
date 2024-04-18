@@ -1,6 +1,9 @@
 ---
-title: "Homework 07: Murder in SQL City"
-author: "Firstname Lastname"
+title: "Homework: Murder in SQL City"
+execute:
+  error: true
+author: "Your Name"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
