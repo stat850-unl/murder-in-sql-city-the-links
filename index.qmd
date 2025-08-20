@@ -1,0 +1,100 @@
+---
+title: "Homework: Murder in SQL City"
+execute:
+  error: true
+author: "Your Name"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F)
+options(digits = 3)
+
+library(tidyverse)
+```
+
+## Instructions
+Northwestern University's Knight lab created a SQL murder mystery to help users sharpen their database skills by solving the crime that happened at SQL city. There are tables with different pieces of information - social media checkins, people, drivers licenses, crime scene reports, police interviews, and more. 
+
+Pick R or Python, and solve the murder mystery, showing **all of your work in this document**. 
+
+Your solution must be reproducible -- that is, you should use dplyr verbs, table joins, etc. to solve the mystery, rather than just looking through the tables yourselves.
+
+You may work in groups of 2-4 people on this assignment. Each person should turn in their own assignment, but should list their group members as authors.
+
+Make sure you do your due diligence! You should double check your answer and print out the guilty party's interview from the database.
+
+When you are finished with the assignment: 
+
+- Once you have finished this assignment, render the document (Ctrl/Cmd-Shift-K or the Render button). 
+- Commit the qmd file and any other files you have changed to the repository and push your changes.
+- In Canvas, submit a link to your github repository containing the updated files.
+- Provide the name of the guilty party in the text input field on Canvas, and make sure all of your work is on GitHub to receive full credit.
+
+The chunks below use the code to read in each of the 8 tables of data for this assignment.
+
+Hints:
+
+- You can use a lot of filter statements, but it will in many cases be easier to use joins. 
+- See if you can write code that doesn't require you to type out knowledge gained from a previous clue (e.g. pipe your results from one query into the next)
+
+
+***
+
+A crime has taken place and the detective needs your help. The detective gave you the crime scene report, but you somehow lost it. You vaguely remember that the crime was a murder that occurred sometime on January 15, 2018 and that it took place in SQL City. All the clues to this mystery are buried in a huge database, and you need to use R and SAS to navigate through this network of information. Your first step to solving the mystery is to retrieve the corresponding crime scene report from the police department's database. 
+
+This database schema may help you figure out how to navigate the database:
+
+![sql-murder-mystery database schema diagram](https://github.com/NUKnightLab/sql-mysteries/blob/master/schema.png?raw=true)
+
+## R
+```{r db-setup-r}
+library(RSQLite)
+library(DBI)
+
+# Your database connection code goes here. Store the connection as con 
+con <- dbConnect(RSQLite::SQLite(), "sql-murder-mystery.db")
+
+table_names <- c("crime_scene_report", 
+                 "drivers_license", 
+                 "facebook_event_checkin",
+                 "get_fit_now_check_in", 
+                 "get_fit_now_member", 
+                 "income", 
+                 "interview",
+                 "person")
+
+# For each table name, read the tables in and store them as the name of the table
+purrr::walk(table_names, function(x) {
+  assign(x, dbReadTable(con, x), envir = .GlobalEnv)
+})
+
+# close the connection when you're done
+dbDisconnect(con)
+```
+
+
+
+## Python
+
+```{python table-setup-py}
+import pandas as pd
+import sqlite3
+
+# Read sqlite query results into a pandas DataFrame
+con = sqlite3.connect("sql-murder-mystery.db")
+
+crime_scene_report = pd.read_sql_query("SELECT * from crime_scene_report", con)
+drivers_license = pd.read_sql_query("SELECT * from drivers_license", con)
+facebook_event_checkin = pd.read_sql_query("SELECT * from facebook_event_checkin", con)
+get_fit_now_check_in = pd.read_sql_query("SELECT * from get_fit_now_check_in", con)
+get_fit_now_member = pd.read_sql_query("SELECT * from get_fit_now_member", con)
+income = pd.read_sql_query("SELECT * from income", con)
+interview = pd.read_sql_query("SELECT * from interview", con)
+person = pd.read_sql_query("SELECT * from person", con)
+
+# Verify that result of SQL query is stored in the dataframe
+print(crime_scene_report.head())
+
+con.close()
+```
