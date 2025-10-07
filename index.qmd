@@ -2,7 +2,7 @@
 title: "Homework: Murder in SQL City"
 execute:
   error: true
-author: "Your Name"
+author: "Ryan, Thomas, Gabe"
 output: html_document
 ---
 
@@ -69,12 +69,34 @@ purrr::walk(table_names, function(x) {
   assign(x, dbReadTable(con, x), envir = .GlobalEnv)
 })
 
+crime_scene_report
+drivers_license
+facebook_event_checkin
+get_fit_now_check_in
+get_fit_now_member
+income
+interview
+person
+
+
 # close the connection when you're done
 dbDisconnect(con)
 ```
 
 
 
+```{r}
+desired = crime_scene_report %>%
+  filter(type=="murder",date=="20180115",city=="SQL City")
+
+desired$description
+
+```
+```{r}
+witness = person %>%
+  filter
+
+```
 ## Python
 
 ```{python table-setup-py}
