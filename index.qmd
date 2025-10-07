@@ -86,15 +86,11 @@ dbDisconnect(con)
 
 
 ```{r}
-desired = crime_scene_report %>%
-  filter(type=="murder",date=="20180115",city=="SQL City")
+murder_id <- crime_scene_report %>% 
+  filter(type == "murder", city == "SQL City", date == "20180115")
 
-desired$description
-
-```
-```{r}
-witness = person %>%
-  filter
+witnesses <- person %>% 
+  filter((str_detect(name, "Annabel") & address_street_name == "Franklin Ave") | (address_street_name == "Northwestern Dr"))
 
 ```
 ## Python
