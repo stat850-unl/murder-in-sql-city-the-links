@@ -73,6 +73,44 @@ purrr::walk(table_names, function(x) {
 dbDisconnect(con)
 ```
 
+```{r}
+murder_id <- crime_scene_report %>% 
+  filter(type == "murder", city == "SQL City", date == "20180115")
+
+witnesses <- person %>% 
+  filter((str_detect(name, "Annabel") & address_street_name == "Franklin Ave") | (address_street_name == "Northwestern Dr" & address_number == "4919"))
+
+interviews <- interview %>% 
+  inner_join(witnesses, by = c("person_id" = "id")) #Witness statements
+
+gym_suspects <- get_fit_now_check_in %>% #Primary suspects
+   inner_join(
+   get_fit_now_member %>% 
+     filter(str_detect(id, "^48Z"), membership_status == "gold"),
+   by = c("membership_id" = "id")
+  )
+
+person %>% 
+  filter(id %in% (gym_suspects$person_id)) %>% 
+  inner_join(
+    drivers_license,
+    by = "id"
+  ) #Couldn't find a connection between gym suspects and a vehicle???
+
+license_plates <- drivers_license %>% 
+  filter(str_detect(plate_number, "H42W"))
+
+facebook_event_checkin %>% 
+  filter(person_id %in% c(gym_suspects$person_id, license_plates$id)) %>% 
+  left_join(person, by = c("person_id" = "id"))
+```
+
+
+
+
+
+
+
 
 
 ## Python
