@@ -2,7 +2,7 @@
 title: "Homework: Murder in SQL City"
 execute:
   error: true
-author: "Thomas, Ryan, Gabe"
+author: "Ryan, Thomas, Gabe"
 output: html_document
 ---
 
@@ -69,89 +69,30 @@ purrr::walk(table_names, function(x) {
   assign(x, dbReadTable(con, x), envir = .GlobalEnv)
 })
 
+crime_scene_report
+drivers_license
+facebook_event_checkin
+get_fit_now_check_in
+get_fit_now_member
+income
+interview
+person
+
+
 # close the connection when you're done
 dbDisconnect(con)
 ```
 
-```{r}
 
-#Determine crime
+
+```{r}
 murder_id <- crime_scene_report %>% 
   filter(type == "murder", city == "SQL City", date == "20180115")
 
-#Determine who the witnesses are from crime report
 witnesses <- person %>% 
-  filter((str_detect(name, "Annabel") & address_street_name == "Franklin Ave") | (address_street_name == "Northwestern Dr" & address_number == "4919"))
+  filter((str_detect(name, "Annabel") & address_street_name == "Franklin Ave") | (address_street_name == "Northwestern Dr"))
 
-#Find witness interviews
-interviews <- interview %>% 
-  inner_join(witnesses, by = c("person_id" = "id")) #Witness statements
-
-#Determine gym suspects from witness interviews
-gym_suspects <- get_fit_now_check_in %>% #Primary suspects
-   inner_join(
-   get_fit_now_member %>% 
-     filter(str_detect(id, "^48Z"), membership_status == "gold"),
-   by = c("membership_id" = "id")
-  )
-
-
-# We suspect there to be a get away driver
-# need to connect on license ID
-person %>% 
-  filter(id %in% (gym_suspects$person_id)) %>% 
-  inner_join(
-    drivers_license,
-    by = c("license_id", "id")
-  ) #Couldn't find a connection between gym suspects and a vehicle???
-
-
-#Filter to find potential cars for gym suspects
-# Found jeremys car
-license_plates <- drivers_license %>% 
-  filter(str_detect(plate_number, "H42W")) %>% 
-  left_join(person, by = c("id" = "license_id")) %>% 
-  filter(name == "Jeremy Bowers")
-
-jeremy_id <- license_plates$id.y
-
-#Check alibis for gym goers
-facebook_event_checkin %>% 
-  filter(person_id %in% c(gym_suspects$person_id, license_plates$id)) %>% 
-  left_join(person, by = c("person_id" = "id"))
-
-interview %>% 
-  filter(person_id == jeremy_id)
-# Women 65 or 67, red hair, tesla model s, SQL symphony concert 3 times in dec 2017
-
-
-#Prime suspect for murder to hire matching jeremy bower description
-prime_suspect <- drivers_license %>% 
-  filter(gender == "female", height %in% c(65, 66, 67), 
-         car_make == "Tesla", car_model == "Model S") %>% 
-  left_join(person, by = c("id" = "license_id"))
-
-prime_suspect_ids <- prime_suspect$id.y
-
-
-#Determine if suspects attended the concert 3 times in Dec. 2017
-check_concerts <- facebook_event_checkin %>% 
-  filter(person_id %in% prime_suspect_ids)
-
-new_id <- check_concerts$person_id[[1]]
-
-
-
-miranda <- person %>%
-  filter(id == new_id)
-
-miranda_ssn <- miranda_ssn$ssn
-
-
-
-#Mastermind is determined to be Miranda Priestly!
 ```
-
 
 
 
