@@ -2,7 +2,7 @@
 title: "Homework: Murder in SQL City"
 execute:
   error: true
-author: "Gabe Attempt"
+author: "Thomas, Ryan, Gabe"
 output: html_document
 ---
 
