@@ -93,6 +93,14 @@ witnesses <- person %>%
   filter((str_detect(name, "Annabel") & address_street_name == "Franklin Ave") | (address_street_name == "Northwestern Dr"))
 
 ```
+
+
+
+
+
+
+
+
 ## Python
 
 ```{python table-setup-py}
